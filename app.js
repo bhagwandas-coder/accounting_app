@@ -285,3 +285,14 @@ function notify(msg, isError = false) {
 // init
 renderClient();
 renderAdmin();
+// after: setCases(cases); newCaseForm.reset(); notify("Case created successfully.");
+renderClient();
+renderAdmin();
+
+// 👉 automatically switch to "My Cases"
+document.querySelector('[data-section="my-cases"]')?.click();
+
+// 👉 also pre-render admin when user clicks "Admin Dashboard"
+document.querySelector('.nav-tab[data-view="admin"]')
+  ?.addEventListener('click', () => renderAdmin());
+
