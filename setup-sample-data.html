@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Sample Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2563eb;
+        }
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #1e40af;
+        }
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        #status.success {
+            background: #d1fae5;
+            color: #065f46;
+            display: block;
+        }
+        #status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            display: block;
+        }
+        .info {
+            background: #e0e7ff;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Setup Sample Data</h1>
+        <div class="info">
+            <p><strong>Note:</strong> This will update the existing sample data to properly link tasks and messages to cases. Click the button below to complete the setup.</p>
+        </div>
+        
+        <button onclick="setupSampleData()">Setup Sample Data</button>
+        
+        <div id="status"></div>
+    </div>
+
+    <script>
+        async function setupSampleData() {
+            const statusDiv = document.getElementById('status');
+            statusDiv.textContent = 'Setting up sample data...';
+            statusDiv.className = '';
+            
+            try {
+                // Fetch all cases
+                const casesResponse = await fetch('tables/cases?limit=100');
+                const casesResult = await casesResponse.json();
+                const cases = casesResult.data || [];
+                
+                if (cases.length === 0) {
+                    statusDiv.textContent = 'No cases found. Please create cases first.';
+                    statusDiv.className = 'error';
+                    return;
+                }
+                
+                // Get the first case (John Smith - Tax Filing)
+                const firstCase = cases[0];
+                console.log('First case ID:', firstCase.id);
+                
+                // Update tasks to link to first case
+                const tasksResponse = await fetch('tables/tasks?limit=100');
+                const tasksResult = await tasksResponse.json();
+                const tasks = tasksResult.data || [];
+                
+                for (const task of tasks) {
+                    if (!task.case_id || task.case_id === '') {
+                        await fetch(`tables/tasks/${task.id}`, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ case_id: firstCase.id })
+                        });
+                    }
+                }
+                
+                // Update messages to link to first case
+                const messagesResponse = await fetch('tables/messages?limit=100');
+                const messagesResult = await messagesResponse.json();
+                const messages = messagesResult.data || [];
+                
+                for (const message of messages) {
+                    if (!message.case_id || message.case_id === '') {
+                        await fetch(`tables/messages/${message.id}`, {
+                            method: 'PATCH',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ case_id: firstCase.id })
+                        });
+                    }
+                }
+                
+                statusDiv.textContent = '✅ Sample data setup complete! You can now go back to index.html to explore the system.';
+                statusDiv.className = 'success';
+                
+                // Redirect after 3 seconds
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 3000);
+                
+            } catch (error) {
+                console.error('Error:', error);
+                statusDiv.textContent = '❌ Error setting up sample data: ' + error.message;
+                statusDiv.className = 'error';
+            }
+        }
+    </script>
+</body>
+</html>

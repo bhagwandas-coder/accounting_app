@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accounting Case Management System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-calculator"></i>
+                <span>AccounTrack Pro</span>
+            </div>
+            <nav class="nav-tabs">
+                <button class="nav-tab active" data-view="client">
+                    <i class="fas fa-user"></i> Client Portal
+                </button>
+                <button class="nav-tab" data-view="admin">
+                    <i class="fas fa-user-shield"></i> Admin Dashboard
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- CLIENT VIEW -->
+        <div id="client-view" class="view-container active">
+            <div class="container">
+                <div class="page-header">
+                    <h1><i class="fas fa-folder-plus"></i> Client Portal</h1>
+                    <p>Create and manage your accounting cases</p>
+                </div>
+
+                <!-- Client Navigation -->
+                <div class="sub-nav">
+                    <button class="sub-nav-btn active" data-section="new-case">
+                        <i class="fas fa-plus-circle"></i> New Case
+                    </button>
+                    <button class="sub-nav-btn" data-section="my-cases">
+                        <i class="fas fa-folder-open"></i> My Cases
+                    </button>
+                </div>
+
+                <!-- New Case Section -->
+                <div id="new-case-section" class="content-section active">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2><i class="fas fa-file-alt"></i> Create New Case</h2>
+                        </div>
+                        <div class="card-body">
+                            <form id="new-case-form">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="client-name">
+                                            <i class="fas fa-user"></i> Full Name *
+                                        </label>
+                                        <input type="text" id="client-name" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="client-email">
+                                            <i class="fas fa-envelope"></i> Email Address *
+                                        </label>
+                                        <input type="email" id="client-email" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="client-phone">
+                                            <i class="fas fa-phone"></i> Phone Number *
+                                        </label>
+                                        <input type="tel" id="client-phone" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="company-name">
+                                            <i class="fas fa-building"></i> Company Name
+                                        </label>
+                                        <input type="text" id="company-name">
+                                    </div>
+                                    <div class="form-group full-width">
+                                        <label for="case-type">
+                                            <i class="fas fa-briefcase"></i> Service Type *
+                                        </label>
+                                        <select id="case-type" required>
+                                            <option value="">Select service type...</option>
+                                            <option value="Tax Filing">Tax Filing</option>
+                                            <option value="Company Opening">Company Opening</option>
+                                            <option value="Bookkeeping">Bookkeeping</option>
+                                            <option value="Audit">Audit</option>
+                                            <option value="Payroll">Payroll</option>
+                                            <option value="Financial Consulting">Financial Consulting</option>
+                                            <option value="VAT Registration">VAT Registration</option>
+                                            <option value="Other">Other</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group full-width">
+                                        <label for="case-priority">
+                                            <i class="fas fa-flag"></i> Priority *
+                                        </label>
+                                        <select id="case-priority" required>
+                                            <option value="low">Low</option>
+                                            <option value="medium" selected>Medium</option>
+                                            <option value="high">High</option>
+                                            <option value="urgent">Urgent</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group full-width">
+                                        <label for="case-description">
+                                            <i class="fas fa-align-left"></i> Case Description *
+                                        </label>
+                                        <textarea id="case-description" rows="5" required placeholder="Please provide detailed information about your requirements..."></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-paper-plane"></i> Submit Case
+                                    </button>
+                                    <button type="reset" class="btn btn-secondary">
+                                        <i class="fas fa-redo"></i> Reset
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- My Cases Section -->
+                <div id="my-cases-section" class="content-section">
+                    <div class="filter-bar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="client-case-search" placeholder="Search by name, email, or company...">
+                        </div>
+                        <div class="filter-group">
+                            <label>Status:</label>
+                            <select id="client-status-filter">
+                                <option value="">All</option>
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                                <option value="on_hold">On Hold</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="client-cases-list" class="cases-grid">
+                        <!-- Cases will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ADMIN VIEW -->
+        <div id="admin-view" class="view-container">
+            <div class="container">
+                <div class="page-header">
+                    <h1><i class="fas fa-users-cog"></i> Admin Dashboard</h1>
+                    <p>Manage cases, allocate tasks, and track progress</p>
+                </div>
+
+                <!-- Admin Navigation -->
+                <div class="sub-nav">
+                    <button class="sub-nav-btn active" data-section="all-cases">
+                        <i class="fas fa-list"></i> All Cases
+                    </button>
+                    <button class="sub-nav-btn" data-section="case-details">
+                        <i class="fas fa-eye"></i> Case Details
+                    </button>
+                </div>
+
+                <!-- All Cases Section -->
+                <div id="all-cases-section" class="content-section active">
+                    <div class="filter-bar">
+                        <div class="search-box">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="admin-case-search" placeholder="Search cases...">
+                        </div>
+                        <div class="filter-group">
+                            <label>Status:</label>
+                            <select id="admin-status-filter">
+                                <option value="">All</option>
+                                <option value="pending">Pending</option>
+                                <option value="in_progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                                <option value="on_hold">On Hold</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Priority:</label>
+                            <select id="admin-priority-filter">
+                                <option value="">All</option>
+                                <option value="urgent">Urgent</option>
+                                <option value="high">High</option>
+                                <option value="medium">Medium</option>
+                                <option value="low">Low</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="admin-cases-list" class="table-container">
+                        <!-- Cases table will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Case Details Section -->
+                <div id="case-details-section" class="content-section">
+                    <div id="case-details-content">
+                        <div class="empty-state">
+                            <i class="fas fa-folder-open"></i>
+                            <p>Select a case to view details</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Case Details Modal -->
+    <div id="case-modal" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 id="modal-case-title">Case Details</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="case-details-layout">
+                    <!-- Left Column: Case Info & Tasks -->
+                    <div class="case-details-left">
+                        <!-- Case Information -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-info-circle"></i> Case Information</h3>
+                            </div>
+                            <div class="card-body" id="modal-case-info">
+                                <!-- Case info will be loaded here -->
+                            </div>
+                        </div>
+
+                        <!-- Tasks Management -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-tasks"></i> Tasks</h3>
+                                <button class="btn btn-sm btn-primary" id="add-task-btn">
+                                    <i class="fas fa-plus"></i> Add Task
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div id="tasks-list">
+                                    <!-- Tasks will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Attachments -->
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-paperclip"></i> Attachments</h3>
+                                <label class="btn btn-sm btn-primary file-upload-btn">
+                                    <i class="fas fa-upload"></i> Upload
+                                    <input type="file" id="attachment-upload" style="display: none;" multiple>
+                                </label>
+                            </div>
+                            <div class="card-body">
+                                <div id="attachments-list">
+                                    <!-- Attachments will be loaded here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Chat -->
+                    <div class="case-details-right">
+                        <div class="card chat-card">
+                            <div class="card-header">
+                                <h3><i class="fas fa-comments"></i> Chat</h3>
+                            </div>
+                            <div class="card-body">
+                                <div id="chat-messages" class="chat-messages">
+                                    <!-- Messages will be loaded here -->
+                                </div>
+                                <div class="chat-input">
+                                    <input type="text" id="chat-message-input" placeholder="Type your message...">
+                                    <button id="send-message-btn" class="btn btn-primary">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Task Modal -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Task</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-task-form">
+                    <div class="form-group">
+                        <label for="task-name">
+                            <i class="fas fa-tasks"></i> Task Name *
+                        </label>
+                        <input type="text" id="task-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-description">
+                            <i class="fas fa-align-left"></i> Description *
+                        </label>
+                        <textarea id="task-description" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-order">
+                            <i class="fas fa-sort-numeric-up"></i> Step Order *
+                        </label>
+                        <input type="number" id="task-order" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="task-due-date">
+                            <i class="fas fa-calendar"></i> Due Date
+                        </label>
+                        <input type="date" id="task-due-date">
+                    </div>
+                    <div class="form-group">
+                        <label for="task-assigned-by">
+                            <i class="fas fa-user-tie"></i> Assigned By *
+                        </label>
+                        <input type="text" id="task-assigned-by" required placeholder="Your name">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Create Task
+                        </button>
+                        <button type="button" class="btn btn-secondary modal-close">
+                            <i class="fas fa-times"></i> Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="notification" class="notification"></div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
